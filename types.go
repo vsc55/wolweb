@@ -28,7 +28,7 @@ type AppConfig struct {
 
 type User struct {
 	Username string `json:"username"`
-	Passuser string `json:"password"`
+	Password string `json:"password"`
 	Crypted  string `json:"crypted"`
 }
 

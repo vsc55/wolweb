@@ -131,9 +131,9 @@ func basicAuth(next http.HandlerFunc) http.HandlerFunc {
 					password_good := ""
 					switch strings.ToLower(user.Crypted) {
 					case "sha256":
-						password_good = user.Passuser
+						password_good = user.Password
 					default:
-						password_good = fmt.Sprintf("%x", sha256.Sum256([]byte(user.Passuser)))
+						password_good = fmt.Sprintf("%x", sha256.Sum256([]byte(user.Password)))
 					}
 
 					usernameHash := sha256.Sum256([]byte(username))
