@@ -64,7 +64,7 @@ function renderData() {
             var grid = this._grid;
             return $("<button>").addClass("btn btn-dark btn-sm")
                 .attr({ type: "button", title: "Add this device to the list." })
-                .html("<i class=\"fas fa-save\"></i>SAVE")
+                .html("<i class=\"fas fa-save\"></i> SAVE")
                 .on("click", function () {
                     grid.insertItem().done(function () {
                         grid.clearInsert();
@@ -109,25 +109,16 @@ function renderData() {
     jsGrid.fields.bscontrol = BSControl;
 
     var gridFields = [];
-    var gridWidth = "700px";
 
-    gridFields.push({ name: "name", title: "Device", type: "text", width: 150, validate: { validator: "required", message: "Device name is a required field." } });
-    gridFields.push({ name: "mac", title: "MAC Adress", type: "text", width: 150, validate: { validator: "pattern", param: /^[0-9a-f]{1,2}([\.:-])(?:[0-9a-f]{1,2}\1){4}[0-9a-f]{1,2}$/gmi, message: "MAC Address is a required field." } });
     gridFields.push({
-        name: "ip", title: "Broadcast IP", type: "text", width: 150, validate: { validator: "required", message: "Broadcast IP Address is a required field." },
-        insertTemplate: function () {
-            var $result = jsGrid.fields.text.prototype.insertTemplate.call(this); // original input
-            $result.attr("disabled", true).css("background", "lightgray").val(bCastIP);
-            return $result;
-        },
-        // editing: false
-    });
-    gridFields.push({
-        name: "command", type: "control", width: 125, modeSwitchButton: false,
+        name: "command",
+        type: "control",
+        width: 50,
+        modeSwitchButton: false,
         itemTemplate: function (value, item) {
             return $("<button>").addClass("btn btn-primary btn-sm")
                 .attr({ type: "button", title: "Send magic packet" })
-                .html("<i class=\"fas fa-bolt\"></i>WAKE-UP")
+                .html("<i class=\"fas fa-bolt\"></i>")
                 .on("click", function () {
                     $.wakeUpDeviceByName(item.name)
                 });
@@ -136,13 +127,47 @@ function renderData() {
         insertTemplate: function () { return "" }
     });
     gridFields.push({
-        name: "control", type: "bscontrol", width: 100, editButton: true, deleteButton: true, modeSwitchButton: true,
+        name: "name",
+        title: "Device",
+        type: "text",
+        width: "auto",
+        validate: { validator: "required", message: "Device name is a required field." }
+    });
+    gridFields.push({
+        name: "mac",
+        title: "MAC Adress",
+        type: "text",
+        width: 180,
+        align: "center",
+        validate: { validator: "pattern", param: /^[0-9a-f]{1,2}([\.:-])(?:[0-9a-f]{1,2}\1){4}[0-9a-f]{1,2}$/gmi, message: "MAC Address is a required field." }
+    });
+    gridFields.push({
+        name: "ip",
+        title: "Broadcast IP",
+        type: "text",
+        width: 180,
+        align: "center",
+        validate: { validator: "required", message: "Broadcast IP Address is a required field." },
+        insertTemplate: function () {
+            var $result = jsGrid.fields.text.prototype.insertTemplate.call(this); // original input
+            $result.attr("disabled", true).css("background", "lightgray").val(bCastIP);
+            return $result;
+        },
+        // editing: false
+    });
+    gridFields.push({
+        name: "control",
+        type: "bscontrol",
+        width: 100,
+        editButton: true,
+        deleteButton: true,
+        modeSwitchButton: true,
         headerTemplate: function () {
             var grid = this._grid;
             var isInserting = grid.inserting;
             var $button = $("<button>").addClass("btn btn-info btn-sm device-insert-button")
                 .attr({ type: "button", title: "Add new Device" })
-                .html("<i class=\"fas fa-plus\"></i>NEW")
+                .html("<i class=\"fas fa-plus\"></i> NEW")
                 .on("click", function () {
                     isInserting = !isInserting;
                     grid.option("inserting", isInserting);
@@ -153,11 +178,12 @@ function renderData() {
 
     $("#GridDevices").jsGrid({
         height: "auto",
-        width: gridWidth,
+        width: "100%", //700px
         updateOnResize: true,
         editing: true,
         inserting: false,
-        sorting: false,
+        sorting: true,
+        filtering: false,
         confirmDeleting: true,
         deleteConfirm: "Are you sure you want to delete this Device?",
         data: appData.devices,
@@ -169,7 +195,7 @@ function renderData() {
         onItemDeleted: saveAppData,
         onItemUpdated: saveAppData
     });
-
+    
 }
 
 function saveAppData() {

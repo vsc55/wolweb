@@ -16,42 +16,41 @@
     <div class="row">
       <div class="col-12" role="main">
         <h1 class="mb-4 mt-4"><span class="fas fa-power-off"></span> Wake-on-Lan Web Interface<small></h1>
-        <div id="snackbar" class="alert hideMe">
-          Message comes here
-        </div>
+        <div id="snackbar" class="alert hideMe">Message comes here</div>
         <div id="GridDevices"></div>
         <hr>
-        <p>
-        <h3>Wake-up directly using HTTP Request</h3>
-        <b>{{$.VDir}}/wake/<span class="text-info">&lt;DeviceName&gt;</span></b>
-
-        <b>Returns a JSON Object</b>
-        <p>
-        <pre>
+        <button type="button"  class="btn  btn-secondary btn-lg btn-block" data-toggle="collapse" data-target="#collapseInfoUsage" aria-expanded="true" aria-controls="collapseInfoUsage">
+          Wake-up directly using HTTP Request
+        </button>
+        <div id="collapseInfoUsage" class="collapse" aria-labelledby="InfoUsage">
+          <div class="card-body">
+            <p>  
+              <b>{{$.VDir}}/wake/<span class="text-info">&lt;DeviceName&gt;</span></b>
+              <b>Returns a JSON Object</b>
+              <p>
+                <pre>
 {
   "success":true,
   "message":"Sent magic packet to device Server with Mac 34:E6:D7:33:12:71 on Broadcast IP 192.168.1.255:9",
   "error":null
 }
-        </pre>
-        </p>
-        <dl class="dl-horizontal">
-          <dt>success</dt>
-          <dd>True or False if the WakeOnLan Paket was send</dd>
-          <dt>message</dt>
-          <dd>Message as string what happen</dd>
-          <dt>error</dt>
-          <dd>Encoded Jsonobject from GOLANG Error Object</dd>
-        </dl>
-        </p>
+                </pre>
+              </p>
+              <dl class="dl-horizontal">
+                <dt>success</dt>
+                <dd>True or False if the WakeOnLan Paket was send</dd>
+                <dt>message</dt>
+                <dd>Message as string what happen</dd>
+                <dt>error</dt>
+                <dd>Encoded Jsonobject from GOLANG Error Object</dd>
+              </dl>
+            </p>
+          </div>
+        </div>
         <hr>
-        <p>
-          <i class="fab fa-github"></i> Project Page: <a
-            href="https://github.com/sameerdhoot/wolweb">https://github.com/sameerdhoot/wolweb</a>
-        </p>
+        <p><i class="fab fa-github"></i> Project Page: <a href="https://github.com/sameerdhoot/wolweb">https://github.com/sameerdhoot/wolweb</a></p>
         <p class="m-0">
-          <small>Build with <span class="fa fa-heart text-danger" aria-hidden="true"></span> by Sameer Dhoot, <span
-              class="fab fa-github"></span> <a href="https://github.com/dabondi">https://github.com/sameerdhoot</a></small>
+          <small>Build with <span class="fa fa-heart text-danger" aria-hidden="true"></span> by Sameer Dhoot, <span class="fab fa-github"></span> <a href="https://github.com/dabondi">https://github.com/sameerdhoot</a></small>
         </p>
         <p class="m-0">
           <small class="ml-2"><i class="fas fa-code-branch m-1"></i> from David Baumann's project <a href="https://github.com/dabondi/go-rest-wol">https://github.com/dabondi/go-rest-wol</a></small>
@@ -71,5 +70,4 @@
   <script src="static/wolweb.js"></script>
 
 </body>
-
 </html>
