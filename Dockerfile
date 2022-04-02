@@ -26,6 +26,7 @@ COPY --from=builder /wolweb/index.html .
 COPY --from=builder /wolweb/wolweb .
 COPY --from=builder /wolweb/devices.json .
 COPY --from=builder /wolweb/config.json .
+COPY --from=builder /wolweb/users.json .
 COPY --from=builder /wolweb/static ./static
 
 ARG WOLWEBPORT=8089

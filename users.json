@@ -1,13 +1,13 @@
 {
     "users": [
         {
-            "username": "Hola",
-            "password": "Mundo",
+            "username": "User1",
+            "password": "Secret",
             "crypted" : "text"
         },
         {
-            "username": "Hola2",
-            "password": "43C6D4BB0A0DBCFF464BC00237FD62CC702937394DF3E0A8B8D36A985A5741E8",
+            "username": "User2",
+            "password": "7E32A729B1226ED1270F282A8C63054D09B26BC9EC53EA69771CE38158DFADE8",
             "crypted" : "sha256"
         }
     ]
