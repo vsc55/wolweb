@@ -1,14 +1,14 @@
 # docker build -t wolweb .
 FROM golang:buster AS builder
 
-LABEL org.label-schema.vcs-url="https://github.com/sameerdhoot/wolweb" \
-      org.label-schema.url="https://github.com/sameerdhoot/wolweb/blob/master/README.md"
+LABEL org.label-schema.vcs-url="https://github.com/vsc55/wolweb" \
+      org.label-schema.url="https://github.com/vsc55/wolweb/blob/master/README.md"
 
 RUN mkdir /wolweb
 WORKDIR /wolweb
 
 # Install Dependecies
-RUN git clone https://github.com/sameerdhoot/wolweb . && \
+RUN git clone https://github.com/vsc55/wolweb . && \
     go get -d github.com/gorilla/handlers && \
     go get -d github.com/gorilla/mux && \
     go get -d github.com/ilyakaznacheev/cleanenv

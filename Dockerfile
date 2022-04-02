@@ -1,8 +1,8 @@
 # docker build -t wolweb .
 FROM golang:alpine AS builder
 
-LABEL org.label-schema.vcs-url="https://github.com/sameerdhoot/wolweb" \
-      org.label-schema.url="https://github.com/sameerdhoot/wolweb/blob/master/README.md"
+LABEL org.label-schema.vcs-url="https://github.com/vsc55/wolweb" \
+      org.label-schema.url="https://github.com/vsc55/wolweb/blob/main/README.md"
 
 RUN mkdir /wolweb
 WORKDIR /wolweb
@@ -10,7 +10,7 @@ WORKDIR /wolweb
 # Install Dependecies
 RUN apk update && apk upgrade && \
     apk add --no-cache git && \
-    git clone https://github.com/sameerdhoot/wolweb . && \
+    git clone https://github.com/vsc55/wolweb . && \
     go mod init wolweb && \
     go get -d github.com/gorilla/handlers && \
     go get -d github.com/gorilla/mux && \
