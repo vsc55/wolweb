@@ -1,11 +1,16 @@
 package main
 
 import (
+	"crypto/sha256"
+	"crypto/subtle"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/handlers"
@@ -16,6 +21,7 @@ import (
 // Global variables
 var appConfig AppConfig
 var appData AppData
+var appAuth AppAuth
 
 func main() {
 
@@ -49,6 +55,11 @@ func loadConfig() {
 	}
 	log.Printf("Application configuratrion loaded from config.json")
 
+	// Fix: not definded vdir
+	if appConfig.VDir == "/" {
+		appConfig.VDir = ""
+	}
+
 }
 
 func setupWebServer() {
@@ -60,18 +71,18 @@ func setupWebServer() {
 	router.PathPrefix(appConfig.VDir + "/static/").Handler(http.StripPrefix(appConfig.VDir+"/static/", http.FileServer(http.Dir("./static"))))
 
 	// Define Home Route
-	router.HandleFunc(appConfig.VDir, redirectToHomePage).Methods("GET")
-	router.HandleFunc(appConfig.VDir+"/", renderHomePage).Methods("GET")
+	router.HandleFunc(appConfig.VDir, basicAuth(redirectToHomePage)).Methods("GET")
+	router.HandleFunc(appConfig.VDir+"/", basicAuth(renderHomePage)).Methods("GET")
 
 	// Define Wakeup functions with a Device Name
 	router.HandleFunc(appConfig.VDir+"/wake/{deviceName}", wakeUpWithDeviceName).Methods("GET")
 	router.HandleFunc(appConfig.VDir+"/wake/{deviceName}/", wakeUpWithDeviceName).Methods("GET")
 
 	// Define Data save Api function
-	router.HandleFunc(appConfig.VDir+"/data/save", saveData).Methods("POST")
+	router.HandleFunc(appConfig.VDir+"/data/save", basicAuth(saveData)).Methods("POST")
 
 	// Define Data get Api function
-	router.HandleFunc(appConfig.VDir+"/data/get", getData).Methods("GET")
+	router.HandleFunc(appConfig.VDir+"/data/get", basicAuth(getData)).Methods("GET")
 
 	// Define health check function
 	router.HandleFunc(appConfig.VDir+"/health", checkHealth).Methods("GET")
@@ -79,6 +90,7 @@ func setupWebServer() {
 	// Setup Webserver
 	httpListen := ":" + strconv.Itoa(appConfig.Port)
 	log.Printf("Startup Webserver on \"%s\"", httpListen)
+	log.Printf("URL: http://*%s%s", httpListen, appConfig.VDir)
 
 	srv := &http.Server{
 		Handler: handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))(router),
@@ -90,4 +102,53 @@ func setupWebServer() {
 
 	log.Fatal(srv.ListenAndServe())
 
+}
+func basicAuth(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		username, password, ok := r.BasicAuth()
+		authOk := false
+		if ok {
+			usersFile, err := os.Open("users.json")
+			if err != nil {
+				log.Fatalf("Error loading users.json file. \"%s\"", err)
+			}
+			usersDecoder := json.NewDecoder(usersFile)
+			err = usersDecoder.Decode(&appAuth)
+			if err != nil {
+				log.Fatalf("Error decoding users.json file. \"%s\"", err)
+			}
+			if len(appAuth.Users) == 0 {
+				log.Printf("Basic Auth disabled, no users configured.")
+				authOk = true
+			} else {
+				for _, user := range appAuth.Users {
+					if username != user.Username {
+						continue
+					}
+					password_good := ""
+					switch strings.ToLower(user.Crypted) {
+					case "sha256":
+						password_good = user.Password
+					default:
+						password_good = fmt.Sprintf("%x", sha256.Sum256([]byte(user.Password)))
+					}
+					usernameHash := sha256.Sum256([]byte(username))
+					passwordHash := strings.ToLower(fmt.Sprintf("%x", sha256.Sum256([]byte(password))))
+					expectedUsernameHash := sha256.Sum256([]byte(user.Username))
+					expectedPasswordHash := strings.ToLower(password_good)
+					usernameMatch := (subtle.ConstantTimeCompare(usernameHash[:], expectedUsernameHash[:]) == 1)
+					if usernameMatch && strings.TrimSpace(expectedPasswordHash) != "" && (passwordHash == expectedPasswordHash) {
+						authOk = true
+					}
+					break
+				}
+			}
+			if authOk {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	})
 }

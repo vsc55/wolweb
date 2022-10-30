@@ -2,13 +2,15 @@ version: "3"
 services:
   wolweb:
     build: .
-    image: wolweb:latest
     container_name: wolweb
+	image: "vsc55/wolweb:latest"
     
     # make sure that the file exists in local directory from where you are running the compose file
     # Or, initialize empty json file by running command "echo '{}' > devices.json"
     volumes:
       - ./devices.json:/wolweb/devices.json
+      - ./config.json:/wolweb/config.json
+      - ./users.json:/wolweb/users.json
 
     # Have to use host mode as bridge network has issues with UDP broadcast
     # https://github.com/docker/for-linux/issues/637

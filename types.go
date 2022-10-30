@@ -25,3 +25,13 @@ type AppConfig struct {
 	VDir    string `json:"vdir" env:"WOLWEBVDIR" env-default:"/wolweb"`
 	BCastIP string `json:"bcastip" env:"WOLWEBBCASTIP" env-default:"192.168.1.255:9"`
 }
+
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Crypted  string `json:"crypted"`
+}
+
+type AppAuth struct {
+	Users []User `json:"users"`
+}

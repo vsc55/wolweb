@@ -1,0 +1,14 @@
+{
+    "users": [
+        {
+            "username": "User1",
+            "password": "Secret",
+            "crypted" : "text"
+        },
+        {
+            "username": "User2",
+            "password": "7E32A729B1226ED1270F282A8C63054D09B26BC9EC53EA69771CE38158DFADE8",
+            "crypted" : "sha256"
+        }
+    ]
+}

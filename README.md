@@ -66,6 +66,28 @@ You can override the default application configuration by using a config file or
 | WOLWEBVDIR | Override for default virtual directory
 | WOLWEBBCASTIP | Override for broadcast IP address and port
 
+## Users - users.json format
+
+*Configuration file for login usernames and passwords. If no user is defined in this file, no password will be requested and login will be performed automatically.*
+
+```json
+{
+    "users": [
+        {
+            "username": "User1",
+            "password": "Secret",
+            "crypted": "text"
+        },
+        {
+            "username": "User2",
+            "password": "7E32A729B1226ED1270F282A8C63054D09B26BC9EC53EA69771CE38158DFADE8",
+            "crypted": "sha256"
+        }
+    ]
+}
+```
+crypted = text|sha256
+
 ## Devices (targets) - devices.json format
 ```json
 {
