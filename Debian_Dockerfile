@@ -17,7 +17,7 @@ RUN git clone https://github.com/vsc55/wolweb . && \
 RUN go build -o wolweb . 
 
 # Create 2nd Stage final image
-FROM debian
+FROM debian:bullseye
 WORKDIR /wolweb
 COPY --from=builder /wolweb/index.html .
 COPY --from=builder /wolweb/wolweb .
