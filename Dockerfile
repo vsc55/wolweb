@@ -20,7 +20,7 @@ RUN apk update && apk upgrade && \
 RUN go build -o wolweb . 
 
 # Create 2nd Stage final image
-FROM alpine
+FROM alpine:3.18.3
 WORKDIR /wolweb
 COPY --from=builder /wolweb/index.html .
 COPY --from=builder /wolweb/wolweb .
